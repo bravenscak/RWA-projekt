@@ -70,7 +70,8 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                 _logService.Log("INFO", $"Successfully retrieved item where id = {id}.");
                 return Ok(mappedResult);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logService.Log("ERROR", $"Error retrieving item where id = {id}: {ex.Message}");
                 return StatusCode(500, ex.Message);
             }
@@ -114,6 +115,156 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
             {
                 _logService.Log("ERROR", $"Error occurred during search: {ex.Message}\n{ex.StackTrace}");
                 return StatusCode(500, "An internal server error occurred.");
+            }
+        }
+
+        [HttpPost("[action]")]
+        public ActionResult<ItemDto> NewItem([FromBody] ItemDto itemDto)
+        {
+            try
+            {
+                if (itemDto == null)
+                {
+                    return BadRequest("There is no value.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logService.Log("ERROR", "Model state is invalid.");
+                    return BadRequest(ModelState);
+                }
+
+                if (string.IsNullOrWhiteSpace(itemDto.ItemTypeName))
+                {
+                    return BadRequest("Item type name is required.");
+                }
+
+                var trimmedItemTypeName = itemDto.ItemTypeName.Trim();
+
+                var itemType = _context.ItemTypes.FirstOrDefault(x => x.Name.Equals(trimmedItemTypeName));
+
+                if (itemType == null)
+                {
+                    itemType = new ItemType
+                    {
+                        Name = trimmedItemTypeName
+                    };
+                    _context.ItemTypes.Add(itemType);
+                    _context.SaveChanges();
+                }
+
+                var trimmedItemName = itemDto.Name.Trim();
+
+                var item = _context.Items.FirstOrDefault(x => x.Name.Equals(trimmedItemName));
+
+                if (item != null)
+                {
+                    return BadRequest("Item name is required");
+                }
+
+                item = new Item
+                {
+                    Name = trimmedItemName,
+                    Description = itemDto.Description,
+                    TypeId = itemType.IditemType
+                };
+
+                _context.Items.Add(item);
+                _context.SaveChanges();
+
+                itemDto.Iditem = item.Iditem;
+
+                _logService.Log("INFO", $"New item created with id = {item.Iditem}.");
+                return Ok(itemDto);
+            }
+            catch (Exception ex)
+            {
+                _logService.Log("ERROR", $"Problem with creating new item: {ex.Message}");
+                return BadRequest("An error occurred while creating a new item.");
+            }
+        }
+
+        [HttpPut("[action]/{id}")]
+        public ActionResult<ItemDto> UpdateItem(int id, [FromBody] ItemDto itemDto)
+        {
+            try
+            {
+                var existingItem = _context.Items.FirstOrDefault(x => x.Iditem == id);
+                if (existingItem == null)
+                {
+                    _logService.Log("ERROR", $"Item where id = {id} not found.");
+                    return NotFound("Item not found");
+                }
+
+                if (string.IsNullOrWhiteSpace(itemDto.ItemTypeName))
+                {
+                    return BadRequest("Item type name is required.");
+                }
+
+                var trimmedItemTypeName = itemDto.ItemTypeName.Trim();
+
+                var itemType = _context.ItemTypes.FirstOrDefault(x => x.Name.Equals(trimmedItemTypeName));
+
+                if (itemType == null)
+                {
+                    _logService.Log("ERROR", $"Item type where name = {trimmedItemTypeName} not found.");
+                    return BadRequest("Item type not found");
+                }
+
+                var trimmedItemName = itemDto.Name.Trim();
+
+                var item = _context.Items.FirstOrDefault(x => x.Name.Equals(trimmedItemName));
+
+                if (item != null) 
+                {
+                    return BadRequest("Item name is required");
+                }
+
+                existingItem.Name = trimmedItemName;
+                existingItem.Description = itemDto.Description;
+                existingItem.TypeId = itemType.IditemType;
+
+                _context.SaveChanges();
+
+                var updatedItemDto = new ItemDto
+                {
+                    Iditem = existingItem.Iditem,
+                    Name = existingItem.Name,
+                    Description = existingItem.Description,
+                    ItemTypeName = itemType.Name
+                };
+
+                _logService.Log("INFO", $"Item where id = {id} updated.");
+                return Ok(updatedItemDto);
+            }
+            catch (Exception ex)
+            {
+                _logService.Log("ERROR", $"Problem with updating item where id = {id}: {ex.Message}");
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public ActionResult<ItemDto> DeleteItem(int id)
+        {
+            try
+            {
+                var item = _context.Items.FirstOrDefault(x => x.Iditem == id);
+                if (item == null)
+                {
+                    _logService.Log("ERROR", $"Item where id = {id} not found.");
+                    return NotFound("Item not found");
+                }
+
+                _context.Items.Remove(item);
+                _context.SaveChanges();
+                _logService.Log("INFO", $"Item where id = {id} deleted.");
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logService.Log("ERROR", $"Problem with deleting item where id = {id}: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
         }
     }
