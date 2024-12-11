@@ -106,5 +106,42 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost("[action]")]
+        public ActionResult ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            try
+            {
+
+                if (string.IsNullOrWhiteSpace(changePasswordDto.Username) ||
+                    string.IsNullOrWhiteSpace(changePasswordDto.NewPassword))
+                {
+                    return BadRequest("There is no input");
+                }
+
+
+                var existingUser = _context.UserDetails
+                    .FirstOrDefault(x => x.Username == changePasswordDto.Username);
+                if (existingUser == null)
+                {
+                    return BadRequest("User does not exist");
+                }
+
+                var newSalt = PasswordHashProvider.GetSalt();
+                var newHash = PasswordHashProvider.GetHash(changePasswordDto.NewPassword, newSalt);
+
+                existingUser.PasswordHash = newHash;
+                existingUser.PasswordSalt = newSalt;
+
+                _context.Update(existingUser);
+                _context.SaveChanges();
+
+                return Ok("Password was changed successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
