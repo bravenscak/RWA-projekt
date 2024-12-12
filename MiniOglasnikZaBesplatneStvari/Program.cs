@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MiniOglasnikZaBesplatneStvari;
 using MiniOglasnikZaBesplatneStvari.Models;
 using System.Text;
 
@@ -46,6 +47,8 @@ builder.Services.AddSwaggerGen(option =>
         });
 });
 
+builder.Services.AddScoped<ILogService, LogService>();
+
 // Configure JWT security services
 var secureKey = builder.Configuration["JWT:SecureKey"];
 builder.Services
@@ -73,11 +76,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
 // Use authentication / authorization middleware
 app.UseAuthentication();
 app.UseAuthorization(); // -> this should already be present
 
 app.MapControllers();
-app.UseStaticFiles();
 
 app.Run();

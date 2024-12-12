@@ -11,12 +11,13 @@ namespace MiniOglasnikZaBesplatneStvari
             _context = context;
         }
 
-        public void Log(string level, string message)
+        public void Log(DateTime timestamp, string level, string message)
         {
             var log = new Log
             {
                 Level = level,
-                Message = message
+                Message = message,
+                Timestamp = timestamp
             };
             _context.Logs.Add(log);
             _context.SaveChanges();

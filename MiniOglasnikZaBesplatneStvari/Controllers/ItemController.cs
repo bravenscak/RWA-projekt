@@ -36,12 +36,12 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                         Description = x.Description,
                         ItemTypeName = x.Type.Name
                     });
-                _logService.Log("INFO", "Successfully retrieved all items");
+                _logService.Log(DateTime.Now, "INFO", "Successfully retrieved all items");
                 return Ok(mappedResult);
             }
             catch (Exception ex)
             {
-                _logService.Log("ERROR", $"Error retrieving items: {ex.Message}");
+                _logService.Log(DateTime.Now, "ERROR", $"Error retrieving items: {ex.Message}");
                 return StatusCode(500, ex.Message);
             }
         }
@@ -57,7 +57,7 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                     .FirstOrDefault(x => x.Iditem == id);
                 if (result == null)
                 {
-                    _logService.Log("ERROR", $"Item where id = {id} not found.");
+                    _logService.Log(DateTime.Now, "ERROR", $"Item where id = {id} not found.");
                     return NotFound("Item not found");
                 }
                 var mappedResult = new ItemDto
@@ -67,12 +67,12 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                     Description = result.Description,
                     ItemTypeName = result.Type.Name
                 };
-                _logService.Log("INFO", $"Successfully retrieved item where id = {id}.");
+                _logService.Log(DateTime.Now, "INFO", $"Successfully retrieved item where id = {id}.");
                 return Ok(mappedResult);
             }
             catch (Exception ex)
             {
-                _logService.Log("ERROR", $"Error retrieving item where id = {id}: {ex.Message}");
+                _logService.Log(DateTime.Now, "ERROR", $"Error retrieving item where id = {id}: {ex.Message}");
                 return StatusCode(500, ex.Message);
             }
         }
@@ -101,19 +101,19 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                         results = results.OrderBy(x => x.Name);
                         break;
                     default:
-                        _logService.Log("WARN", $"Invalid sortType '{sortType}' provided.");
+                        _logService.Log(DateTime.Now, "WARN", $"Invalid sortType '{sortType}' provided.");
                         break;
                 }
 
                 results = results.Skip((page - 1) * count).Take(count);
 
-                _logService.Log("INFO", $"Search completed for text '{text}' with sort '{sortType}'.");
+                _logService.Log(DateTime.Now, "INFO", $"Search completed for text '{text}' with sort '{sortType}'.");
 
                 return Ok(results);
             }
             catch (Exception ex)
             {
-                _logService.Log("ERROR", $"Error occurred during search: {ex.Message}\n{ex.StackTrace}");
+                _logService.Log(DateTime.Now, "ERROR", $"Error occurred during search: {ex.Message}\n{ex.StackTrace}");
                 return StatusCode(500, "An internal server error occurred.");
             }
         }
@@ -130,7 +130,7 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
 
                 if (!ModelState.IsValid)
                 {
-                    _logService.Log("ERROR", "Model state is invalid.");
+                    _logService.Log(DateTime.Now, "ERROR", "Model state is invalid.");
                     return BadRequest(ModelState);
                 }
 
@@ -174,12 +174,12 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
 
                 itemDto.Iditem = item.Iditem;
 
-                _logService.Log("INFO", $"New item created with id = {item.Iditem}.");
+                _logService.Log(DateTime.Now, "INFO", $"New item created with id = {item.Iditem}.");
                 return Ok(itemDto);
             }
             catch (Exception ex)
             {
-                _logService.Log("ERROR", $"Problem with creating new item: {ex.Message}");
+                _logService.Log(DateTime.Now, "ERROR", $"Problem with creating new item: {ex.Message}");
                 return BadRequest("An error occurred while creating a new item.");
             }
         }
@@ -192,7 +192,7 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                 var existingItem = _context.Items.FirstOrDefault(x => x.Iditem == id);
                 if (existingItem == null)
                 {
-                    _logService.Log("ERROR", $"Item where id = {id} not found.");
+                    _logService.Log(DateTime.Now, "ERROR", $"Item where id = {id} not found.");
                     return NotFound("Item not found");
                 }
 
@@ -207,7 +207,7 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
 
                 if (itemType == null)
                 {
-                    _logService.Log("ERROR", $"Item type where name = {trimmedItemTypeName} not found.");
+                    _logService.Log(DateTime.Now, "ERROR", $"Item type where name = {trimmedItemTypeName} not found.");
                     return BadRequest("Item type not found");
                 }
 
@@ -234,12 +234,12 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                     ItemTypeName = itemType.Name
                 };
 
-                _logService.Log("INFO", $"Item where id = {id} updated.");
+                _logService.Log(DateTime.Now, "INFO", $"Item where id = {id} updated.");
                 return Ok(updatedItemDto);
             }
             catch (Exception ex)
             {
-                _logService.Log("ERROR", $"Problem with updating item where id = {id}: {ex.Message}");
+                _logService.Log(DateTime.Now, "ERROR", $"Problem with updating item where id = {id}: {ex.Message}");
                 return StatusCode(500, ex.Message);
             }
         }
@@ -252,18 +252,18 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                 var item = _context.Items.FirstOrDefault(x => x.Iditem == id);
                 if (item == null)
                 {
-                    _logService.Log("ERROR", $"Item where id = {id} not found.");
+                    _logService.Log(DateTime.Now, "ERROR", $"Item where id = {id} not found.");
                     return NotFound("Item not found");
                 }
 
                 _context.Items.Remove(item);
                 _context.SaveChanges();
-                _logService.Log("INFO", $"Item where id = {id} deleted.");
+                _logService.Log(DateTime.Now, "INFO", $"Item where id = {id} deleted.");
                 return Ok();
             }
             catch (Exception ex)
             {
-                _logService.Log("ERROR", $"Problem with deleting item where id = {id}: {ex.Message}");
+                _logService.Log(DateTime.Now, "ERROR", $"Problem with deleting item where id = {id}: {ex.Message}");
                 return StatusCode(500, ex.Message);
             }
         }

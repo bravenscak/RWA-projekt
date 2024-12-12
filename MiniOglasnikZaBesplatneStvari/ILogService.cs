@@ -2,7 +2,7 @@
 {
     public interface ILogService
     {
-        void Log(string level, string message);
+        void Log(DateTime timestamp, string level, string message);
 
     }
 }
