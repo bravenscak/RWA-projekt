@@ -1,5 +1,4 @@
-﻿using MiniOglasnikZaBesplatneStvari.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MiniOglasnikZaBesplatneStvari.Dtos
 {

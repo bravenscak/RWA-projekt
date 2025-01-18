@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniOglasnikZaBesplatneStvari", "MiniOglasnikZaBesplatneStvari\MiniOglasnikZaBesplatneStvari.csproj", "{B1D9165F-7DE1-4F36-9A79-B65ECCE4653E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniOglasnikZaBesplatneStvari", "MiniOglasnikZaBesplatneStvari\MiniOglasnikZaBesplatneStvari.csproj", "{B1D9165F-7DE1-4F36-9A79-B65ECCE4653E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniOglasnikZaBesplatneStvariMvc", "MiniOglasnikZaBesplatneStvariMvc\MiniOglasnikZaBesplatneStvariMvc.csproj", "{9646E1E6-E082-49DC-B7C6-4EE83E45B844}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniOglasnikZaBesplatneStvariLibrary", "MiniOglasnikZaBesplatneStvariLibrary\MiniOglasnikZaBesplatneStvariLibrary.csproj", "{7E8F268F-075A-4F7D-915A-A20873FC3D06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{B1D9165F-7DE1-4F36-9A79-B65ECCE4653E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1D9165F-7DE1-4F36-9A79-B65ECCE4653E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1D9165F-7DE1-4F36-9A79-B65ECCE4653E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9646E1E6-E082-49DC-B7C6-4EE83E45B844}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9646E1E6-E082-49DC-B7C6-4EE83E45B844}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9646E1E6-E082-49DC-B7C6-4EE83E45B844}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9646E1E6-E082-49DC-B7C6-4EE83E45B844}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E8F268F-075A-4F7D-915A-A20873FC3D06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E8F268F-075A-4F7D-915A-A20873FC3D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E8F268F-075A-4F7D-915A-A20873FC3D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E8F268F-075A-4F7D-915A-A20873FC3D06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

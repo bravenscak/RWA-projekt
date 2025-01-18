@@ -1,4 +1,4 @@
-﻿using MiniOglasnikZaBesplatneStvari.Models;
+﻿using MiniOglasnikZaBesplatneStvariLibrary.Models;
 
 namespace MiniOglasnikZaBesplatneStvari
 {

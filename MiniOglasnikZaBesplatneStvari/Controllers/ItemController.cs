@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using MiniOglasnikZaBesplatneStvari.Dtos;
-using MiniOglasnikZaBesplatneStvari.Models;
+using MiniOglasnikZaBesplatneStvariLibrary.Models;
 
 namespace MiniOglasnikZaBesplatneStvari.Controllers
 {

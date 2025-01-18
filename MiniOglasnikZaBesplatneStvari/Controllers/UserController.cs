@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiniOglasnikZaBesplatneStvari.Dtos;
-using MiniOglasnikZaBesplatneStvari.Models;
+using MiniOglasnikZaBesplatneStvariLibrary.Models;
 using MiniOglasnikZaBesplatneStvari.Security;
 
 namespace MiniOglasnikZaBesplatneStvari.Controllers

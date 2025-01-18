@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MiniOglasnikZaBesplatneStvari.Models;
+using MiniOglasnikZaBesplatneStvariLibrary.Models;
 
 namespace MiniOglasnikZaBesplatneStvari.Controllers
 {
