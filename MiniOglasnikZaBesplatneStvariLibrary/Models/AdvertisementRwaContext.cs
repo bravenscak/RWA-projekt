@@ -130,11 +130,11 @@ public partial class AdvertisementRwaContext : DbContext
 
         modelBuilder.Entity<UserDetail>(entity =>
         {
-            entity.HasKey(e => e.IduserDetails).HasName("PK__UserDeta__D02C71242DE62578");
+            entity.HasKey(e => e.IdUserDetails).HasName("PK__UserDeta__D02C71242DE62578");
 
             entity.ToTable("UserDetail");
 
-            entity.Property(e => e.IduserDetails).HasColumnName("IDUserDetails");
+            entity.Property(e => e.IdUserDetails).HasColumnName("IDUserDetails");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.PasswordHash).HasMaxLength(256);
             entity.Property(e => e.PasswordSalt).HasMaxLength(256);
