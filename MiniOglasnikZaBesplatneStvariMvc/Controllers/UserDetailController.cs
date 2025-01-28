@@ -60,7 +60,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
             var authProperties = new AuthenticationProperties();
 
-            Task.Run(() => HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties)).GetAwaiter().GetResult();
+            Task.Run(async() => await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties)).GetAwaiter().GetResult();
 
             if (!string.IsNullOrEmpty(userLoginViewModel.ReturnUrl))
             {
@@ -86,7 +86,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Register(UserDetailViewModel userDetailViewModel)
+        public ActionResult Register(UserDetailViewModel userDetailViewModel)
         {
             var trimmedUsername = userDetailViewModel.Username.Trim();
 
@@ -96,17 +96,17 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 return View();
             }
 
-            return RedirectToAction("Confirm registration", userDetailViewModel);
+            return RedirectToAction("ConfirmRegistration", userDetailViewModel);
         }
 
-        public IActionResult ConfirmRegistration(UserDetailViewModel userDetailViewModel)
+        public ActionResult ConfirmRegistration(UserDetailViewModel userDetailViewModel)
         {
             return View(userDetailViewModel);
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult ConfirmRegistrationPost(UserDetailViewModel userDetailViewModel)
+        public IActionResult CompleteRegistration(UserDetailViewModel userDetailViewModel)
         {
             var salt = PasswordHashProvider.GetSalt();
             var hash = PasswordHashProvider.GetHash(userDetailViewModel.Password, salt);
@@ -136,6 +136,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             var userDetail = _context.UserDetails.FirstOrDefault(u => u.Username == username);
             var userDetailViewModel = new UserDetailViewModel
             {
+                IdUserDetails = userDetail.IdUserDetails,
                 Username = userDetail.Username,
                 Email = userDetail.Email,
                 Phone = userDetail.Phone
@@ -145,7 +146,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
         }
 
         [Authorize]
-        public IActionResult EditProfile(int id)
+        public IActionResult ProfileEdit(int id)
         {
             var userDetail = _context.UserDetails.First(u => u.IdUserDetails == id);
             var userDetailViewModel = new UserDetailViewModel
@@ -160,7 +161,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult EditProfile(int id, UserDetailViewModel userDetailViewModel)
+        public IActionResult ProfileEdit(int id, UserDetailViewModel userDetailViewModel)
         {
             var userDetail = _context.UserDetails.First(u => u.IdUserDetails == id);
             userDetail.Username = userDetailViewModel.Username;
@@ -172,17 +173,42 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             return RedirectToAction("ProfileDetails");
         }
 
+        public JsonResult GetProfileData(int id)
+        {
+            var userDb = _context.UserDetails.First(x => x.IdUserDetails == id);
+            return Json(new
+            {
+                userDb.Username,
+                userDb.Email,
+                userDb.Phone
+            });
+        }
+
         [HttpPut]
         public ActionResult SetProfileData(int id, [FromBody] UserDetailViewModel userDetailViewModel)
         {
-            var userDetail = _context.UserDetails.First(u => u.IdUserDetails == id);
-            userDetail.Username = userDetailViewModel.Username;
-            userDetail.Email = userDetailViewModel.Email;
-            userDetail.Phone = userDetailViewModel.Phone;
+            try
+            {
+                var userDetail = _context.UserDetails.First(u => u.IdUserDetails == id);
+                if (userDetail == null)
+                {
+                    return NotFound(); // or another appropriate response
+                }
 
-            _context.SaveChanges();
+                userDetail.Username = userDetailViewModel.Username;
+                userDetail.Email = userDetailViewModel.Email;
+                userDetail.Phone = userDetailViewModel.Phone;
 
-            return Ok();
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you can use any logging framework or just write to a file)
+                Console.WriteLine($"Error updating profile: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

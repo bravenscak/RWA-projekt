@@ -27,7 +27,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             var typeListItemsJson = HttpContext.Session.GetString("TypeListItems");
 
             List<SelectListItem> typeListItems;
-            if (typeListItemsJson != null)
+            if (typeListItemsJson == null)
             {
                 typeListItems = _context.ItemTypes.Select(t => new SelectListItem
                 {

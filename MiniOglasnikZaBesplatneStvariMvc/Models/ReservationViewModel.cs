@@ -15,6 +15,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Models
         public string? ItemName { get; set; }
 
         [Display(Name = "User")]
+        [ValidateNever]
         [Required(ErrorMessage = "User is required")]
         public int? UserDetailId { get; set; }
 
@@ -25,7 +26,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Models
         public DateTime ReservationDate { get; set; }
 
         [Display(Name = "Status")]
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         [ValidateNever]
         public int Page { get; set; } = 1;

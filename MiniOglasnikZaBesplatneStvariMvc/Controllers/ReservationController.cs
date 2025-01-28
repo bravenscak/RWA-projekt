@@ -26,9 +26,26 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 if (page < 1) page = 1;
                 if (size < 1) size = 10;
 
-                IEnumerable<Reservation> reservations = _context.Reservations
-                    .Include(r => r.Item)
-                    .OrderByDescending(r => r.Idreservation);
+                var username = User.Identity.Name;
+                var isAdmin = User.IsInRole("Admin");
+
+                IEnumerable<Reservation> reservations;
+
+                if (isAdmin)
+                {
+                    reservations = _context.Reservations
+                        .Include(r => r.Item)
+                        .Include(r => r.UserDetail)
+                        .OrderByDescending(r => r.Idreservation);
+                }
+                else
+                {
+                    reservations = _context.Reservations
+                        .Include(r => r.Item)
+                        .Include(r => r.UserDetail)
+                        .Where(r => r.UserDetail.Username == username)
+                        .OrderByDescending(r => r.Idreservation);
+                }
 
                 var reservationsCount = reservations.Count();
 
@@ -66,6 +83,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
         {
             var reservation = _context.Reservations
                 .Include(r => r.Item)
+                .Include(r => r.UserDetail)
                 .FirstOrDefault(r => r.Idreservation == id);
 
             if (reservation == null)
@@ -87,18 +105,25 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             return View(reservationViewModel);
         }
 
-        public ActionResult Create(int id)
+        public ActionResult Create(int ItemId)
         {
-            var item = _context.Items.Find(id);
+            var item = _context.Items.Find(ItemId);
             if (item == null)
             {
                 return NotFound();
             }
 
+            var username = User.Identity.Name;
+            var userDetail = _context.UserDetails.FirstOrDefault(u => u.Username == username);
+
             var reservationViewModel = new ReservationViewModel
             {
                 ItemId = item.Iditem,
                 ItemName = item.Name,
+                Username = username,
+                UserDetailId = userDetail.IdUserDetails,
+                ReservationDate = DateTime.Now,
+                Status = "Reserved"
             };
 
             return View(reservationViewModel);
@@ -131,14 +156,25 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 return Unauthorized();
             }
 
+            reservationViewModel.Status = "Reserved";
+            reservationViewModel.UserDetailId = userDetail.IdUserDetails;
+
             var reservation = new Reservation
             {
                 ItemId = reservationViewModel.ItemId,
-                ReservationDate = DateTime.Now,
-                Status = "Reserved",
-                UserDetailId = userDetail.IdUserDetails,
-                UserDetail = userDetail
+                ReservationDate = reservationViewModel.ReservationDate,
+                Status = reservationViewModel.Status,
+                UserDetailId = reservationViewModel.UserDetailId,
             };
+
+            // Log ModelState errors
+            foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
 
             if (ModelState.IsValid)
             {
@@ -153,7 +189,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
         public ActionResult Edit(int id)
         {
-            var reservation = _context.Reservations.Include(r => r.Item).FirstOrDefault(r => r.Idreservation == id);
+            var reservation = _context.Reservations.Include(r => r.Item).Include(r => r.UserDetail).FirstOrDefault(r => r.Idreservation == id);
 
             if (reservation == null)
             {
@@ -191,7 +227,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 }
 
                 reservation.ReservationDate = DateTime.Now;
-                reservation.Status = "Reserved";
+                reservation.Status = reservationViewModel.Status;
                 reservation.UserDetailId = userDetail.IdUserDetails;
                 reservation.UserDetail = userDetail;
 
@@ -210,6 +246,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
         {
             var reservation = _context.Reservations
                 .Include(r => r.Item)
+                .Include(r => r.UserDetail)
                 .FirstOrDefault(r => r.Idreservation == id);
 
             if (reservation == null)
