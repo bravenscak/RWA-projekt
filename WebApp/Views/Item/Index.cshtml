@@ -2,12 +2,16 @@
 
 @{
     ViewData["Title"] = "Index";
+    var user = this.ViewContext.HttpContext.User;
 }
 
 <h1>Items</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary">Create</a>
+    @if (user.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-outline-primary">Create</a>
+    }
 </p>
 <table class="table table-striped table-sm">
     <thead>
@@ -37,9 +41,17 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Iditem }, new { @class = "btn btn-primary" }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Iditem }, new { @class = "btn btn-outline-primary" }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Iditem }, new { @class = "btn btn-outline-danger" })
+                    @if(user.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Iditem }, new { @class = "btn btn-primary" }) 
+
+                    }
+                    @Html.ActionLink("Details", "Details", new { id = item.Iditem }, new { @class = "btn btn-outline-primary" }) 
+                    @if (user.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Iditem }, new { @class = "btn btn-outline-danger" })
+
+                    }
                 </td>
             </tr>
         }

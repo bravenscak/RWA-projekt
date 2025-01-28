@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MiniOglasnikZaBesplatneStvariLibrary.Models;
@@ -7,6 +8,7 @@ using NuGet.Protocol;
 
 namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ItemTagController : Controller
     {
         private readonly AdvertisementRwaContext _context;

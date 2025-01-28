@@ -192,7 +192,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 var userDetail = _context.UserDetails.First(u => u.IdUserDetails == id);
                 if (userDetail == null)
                 {
-                    return NotFound(); // or another appropriate response
+                    return NotFound(); 
                 }
 
                 userDetail.Username = userDetailViewModel.Username;
@@ -205,7 +205,6 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (you can use any logging framework or just write to a file)
                 Console.WriteLine($"Error updating profile: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }

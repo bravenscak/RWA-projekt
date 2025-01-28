@@ -7,7 +7,7 @@ using NuGet.Protocol;
 
 namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ItemTypeController : Controller
     {
         private readonly AdvertisementRwaContext _context;

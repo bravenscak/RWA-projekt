@@ -19,30 +19,11 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
             _context = context;
         }
 
-        [HttpGet("[action]")]
-        public ActionResult GetToken()
-        {
-            try
-            {
-                // The same secure key must be used here to create JWT,
-                // as the one that is used by middleware to verify JWT
-                var secureKey = _configuration["JWT:SecureKey"];
-                var serializedToken = JwtTokenProvider.CreateToken(secureKey, 10);
-
-                return Ok(serializedToken);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
         [HttpPost("[action]")]
         public ActionResult<UserDetailsDto> Register(UserDetailsDto UserDetailsDto)
         {
             try
             {
-                // Check if there is such a username in the database already
                 var trimmedUsername = UserDetailsDto.Username.Trim();
                 if (_context.UserDetails.Any(x => x.Username.Equals(trimmedUsername)))
                     return BadRequest($"Username {trimmedUsername} already exists");

@@ -7,8 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AdvertisementRwaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MiniOglasnikZaBesplatneStvariMvcContext")));
+builder.Services.AddDbContext<AdvertisementRwaContext>(options => {
+    options.UseSqlServer("Name=ConnectionStrings:AdvertisementRWAcs");
+});
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -35,7 +36,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

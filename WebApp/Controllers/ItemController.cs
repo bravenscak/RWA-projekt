@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -203,6 +204,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             ViewBag.ItemTypeDdlItems = GetTypeListItems();
@@ -214,6 +216,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(ItemViewModel itemViewModel)
         {
             var trimmedName = itemViewModel.Name.Trim();
@@ -282,6 +285,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             }).ToList();
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id)
         {
             ViewBag.ItemTypeDdlItems = GetItemTypes();
@@ -310,6 +314,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id, ItemViewModel itemViewModel)
         {
             try
@@ -337,6 +342,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             var item = _context.Items
@@ -356,6 +362,7 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id, ItemViewModel itemViewModel)
         {
             try

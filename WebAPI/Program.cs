@@ -8,10 +8,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(option =>
@@ -49,7 +46,6 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddScoped<ILogService, LogService>();
 
-// Configure JWT security services
 var secureKey = builder.Configuration["JWT:SecureKey"];
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -69,7 +65,6 @@ builder.Services.AddDbContext<AdvertisementRwaContext>(options => {
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -77,9 +72,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-// Use authentication / authorization middleware
 app.UseAuthentication();
-app.UseAuthorization(); // -> this should already be present
+app.UseAuthorization(); 
 
 app.MapControllers();
 
