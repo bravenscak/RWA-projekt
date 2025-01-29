@@ -17,7 +17,6 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
             _context = context;
         }
 
-        // GET: api/logs/get/N 
         [HttpGet("get/{N:int?}")]
         public ActionResult<IEnumerable<Log>> GetLogs(int N = 10)
         {
@@ -32,7 +31,6 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
             }
         }
 
-        // GET: api/logs/count
         [HttpGet("count")]
         public ActionResult<int> GetLogCount()
         {

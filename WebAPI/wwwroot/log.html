@@ -37,7 +37,7 @@
         main {
             flex: 1;
             padding: 20px;
-            overflow: auto; /* Allows scroll if content is larger than the view */
+            overflow: auto; 
         }
 
         table {
@@ -79,8 +79,8 @@
         }
 
         .scrollable {
-            max-height: 400px; /* Adjust as needed */
-            overflow-y: auto; /* Enables vertical scrolling */
+            max-height: 400px; 
+            overflow-y: auto; 
         }
     </style>
 </head>
@@ -101,7 +101,7 @@
                 </tr>
             </thead>
             <tbody id="logsContainer">
-                <!-- Logs will be dynamically inserted here -->
+               
             </tbody>
         </table>
     </main>
@@ -140,7 +140,7 @@
                 console.log(token);
                 if (!token) {
                     console.error('No JWT token found');
-                    window.location.href = 'login.html'; // Redirect to login if no token
+                    window.location.href = 'login.html'; 
                     return;
                 }
 

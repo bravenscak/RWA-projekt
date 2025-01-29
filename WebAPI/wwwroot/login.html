@@ -64,10 +64,8 @@
                 data: JSON.stringify(loginData),
                 contentType: 'application/json'
             }).done(function (tokenData) {
-                //console.log(tokenData);
                 localStorage.setItem("JWT", tokenData);
 
-                // redirect
                 window.location.href = "log.html";
             }).fail(function (err) {
                 alert(err.responseText);

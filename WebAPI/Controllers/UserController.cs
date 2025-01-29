@@ -28,11 +28,9 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                 if (_context.UserDetails.Any(x => x.Username.Equals(trimmedUsername)))
                     return BadRequest($"Username {trimmedUsername} already exists");
 
-                // Hash the password
                 var b64salt = PasswordHashProvider.GetSalt();
                 var b64hash = PasswordHashProvider.GetHash(UserDetailsDto.Password, b64salt);
 
-                // Create user from DTO and hashed password
                 var user = new UserDetail
                 {
                     IdUserDetails = UserDetailsDto.Id,
@@ -43,11 +41,9 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
                     Phone = UserDetailsDto.Phone,
                 };
 
-                // Add user and save changes to database
                 _context.Add(user);
                 _context.SaveChanges();
 
-                // Update DTO Id to return it to the client
                 UserDetailsDto.Id = user.IdUserDetails;
 
                 return Ok(UserDetailsDto);
@@ -66,17 +62,14 @@ namespace MiniOglasnikZaBesplatneStvari.Controllers
             {
                 var genericLoginFail = "Incorrect username or password";
 
-                // Try to get a user from database
                 var existingUser = _context.UserDetails.FirstOrDefault(x => x.Username == userDto.Username);
                 if (existingUser == null)
                     return BadRequest(genericLoginFail);
 
-                // Check is password hash matches
                 var b64hash = PasswordHashProvider.GetHash(userDto.Password, existingUser.PasswordSalt);
                 if (b64hash != existingUser.PasswordHash)
                     return BadRequest(genericLoginFail);
 
-                // Create and return JWT token
                 var secureKey = _configuration["JWT:SecureKey"];
                 var serializedToken = JwtTokenProvider.CreateToken(secureKey, 120, userDto.Username);
 
