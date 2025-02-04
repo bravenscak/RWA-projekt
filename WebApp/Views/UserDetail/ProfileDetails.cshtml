@@ -1,0 +1,137 @@
+﻿@model MiniOglasnikZaBesplatneStvariMvc.Models.UserDetailViewModel
+
+@{
+    ViewData["Title"] = "ProfileDetails";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">Profile Details</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <div id="profileDetailsPlaceholder">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Username)
+                    </dt>
+                    <dd class="col-sm-10" id="Username">
+                        @Html.DisplayFor(model => model.Username)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class="col-sm-10" id="Email">
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </dt>
+                    <dd class="col-sm-10" id="Phone">
+                        @Html.DisplayFor(model => model.Phone)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="ProfileEdit" asp-route-id="@Model.IdUserDetails" id="ajaxEdit" class="btn btn-primary">Edit</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Back</a>
+</div>
+
+<div class="modal fade" id="AjaxEditModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update User Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="mb-3">
+                        <label for="UsernameInput" class="form-label">Username</label>
+                        <input id="UsernameInput" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="EmailInput" class="form-label">E-mail</label>
+                        <input type="email" id="EmailInput" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="PhoneInput" class="form-label">Phone</label>
+                        <input type="tel" id="PhoneInput" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="SaveProfileButton" type="button" class="btn btn-primary">Save profile</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        const modelId = "@Model.IdUserDetails";
+
+        $("#ajaxUpdate").click(() => {
+            $.ajax({
+                url: `/UserDetail/GetProfileData/${modelId}`,
+                method: "GET"
+            })
+                .done((data) => {
+                    $("#Username").text(data.username);
+                    $("#Email").text(data.email);
+                    $("#Phone").text(data.phone);
+                });
+        })
+
+        const ajaxEditModalEl = $("#AjaxEditModal")[0];
+        const ajaxEditModal = new bootstrap.Modal(ajaxEditModalEl);
+
+        $("#ajaxEdit").click((e) => {
+            e.preventDefault();
+
+            const username = $("#Username").text().trim();
+            const email = $("#Email").text().trim();
+            const phone = $("#Phone").text().trim();
+
+            $("#UsernameInput").val(username);
+            $("#EmailInput").val(email);
+            $("#PhoneInput").val(phone);
+
+            ajaxEditModal.show();
+        });
+
+        $("#SaveProfileButton").click((e) => {
+            e.preventDefault();
+
+            const profile = {
+                IdUserDetails: modelId,
+                Username: $("#UsernameInput").val(),
+                Email: $("#EmailInput").val(),
+                Phone: $("#PhoneInput").val(),
+            };
+
+            $.ajax({
+                url: `/UserDetail/SetProfileData/${modelId}`,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(profile)
+            })
+                .done((data) => {
+                    ajaxEditModal.hide();
+                    $("#ajaxUpdate").trigger("click");
+                })
+                .fail(() => {
+                    alert("ERROR: Could not update profile");
+                });
+        });
+
+        $("#ajaxUpdateHtmlButton").load("/AjaxTest/AjaxHtml");
+    </script>
+
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+}

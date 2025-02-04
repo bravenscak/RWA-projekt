@@ -1,0 +1,17 @@
+﻿@model UserDetailViewModel
+
+<h2>Confirm registration</h2>
+
+<p><strong>Username:</strong> @Model.Username</p>
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Phone:</strong> @Model.Phone</p>
+
+<form method="post" asp-action="CompleteRegistration">
+    <input type="hidden" asp-for="Username" />
+    <input type="hidden" asp-for="Email" />
+    <input type="hidden" asp-for="Phone" />
+    <input type="hidden" asp-for="Password" />
+
+    <button type="submit" class="btn btn-primary">Confirm</button>
+    <a asp-action="Register" class="btn btn-danger">Cancel</a>
+</form>

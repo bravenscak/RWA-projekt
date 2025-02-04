@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Page</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #04AA6D;
+            color: white;
+            padding: 10px 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        #logoutButton {
+            padding: 10px 15px;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            border-radius: 12px;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow: auto; 
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #f9f9f9;
+            overflow: auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        footer {
+            background-color: #04AA6D;
+            color: white;
+            padding: 10px 20px;
+            text-align: right;
+            position: relative;
+        }
+
+        #logCount {
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 12px;
+        }
+
+        #showLogsButton {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .scrollable {
+            max-height: 400px; 
+            overflow-y: auto; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="pageTitle">Log Page</h1>
+        <button id="logoutButton">Odjava</button>
+    </header>
+
+    <main>
+        <table id="logsTable" class="scrollable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Level</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody id="logsContainer">
+               
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <select id="logCount">
+            <option value="10" selected>10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+        </select>
+        <button id="showLogsButton">Prikaži logove</button>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous">
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const showLogsButton = document.getElementById('showLogsButton');
+            const logCountSelect = document.getElementById('logCount');
+            const logsContainer = document.getElementById('logsContainer');
+            const logoutButton = document.getElementById('logoutButton');
+
+            showLogsButton.addEventListener('click', () => {
+                const count = logCountSelect.value;
+                fetchLogs(count);
+            });
+
+            logoutButton.addEventListener('click', () => {
+                logoutUser();
+            });
+
+            async function fetchLogs(count) {
+                const token = localStorage.getItem('JWT');
+                console.log(token);
+                if (!token) {
+                    console.error('No JWT token found');
+                    window.location.href = 'login.html'; 
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:5191/api/Log/get/${count}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const logs = await response.json();
+                        displayLogs(logs);
+                    } else if (response.status === 401) {
+                        console.error('Unauthorized: Invalid token');
+                        window.location.href = 'login.html';
+                    } else {
+                        console.error('Failed to fetch logs:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error fetching logs:', error);
+                }
+            }
+
+            function displayLogs(logs) {
+                logsContainer.innerHTML = '';
+                logs.forEach(log => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                                        <td>${log.logId}</td>
+                                        <td>${log.timestamp}</td>
+                                        <td>${log.level}</td>
+                                        <td>${log.message}</td>
+                                    `;
+                    logsContainer.appendChild(row);
+                });
+            }
+
+            async function logoutUser() {
+                try {
+                    localStorage.removeItem('JWT');
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Error during logout:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
