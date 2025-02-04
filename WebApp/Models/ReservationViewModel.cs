@@ -28,7 +28,6 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Models
         public DateTime ReservationDate { get; set; }
 
         [Display(Name = "Status")]
-        [Required(ErrorMessage = "Status is required")]
         public string? Status { get; set; }
 
         [ValidateNever]

@@ -167,15 +167,6 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 UserDetailId = reservationViewModel.UserDetailId,
             };
 
-            // Log ModelState errors
-            foreach (var modelState in ViewData.ModelState.Values)
-            {
-                foreach (var error in modelState.Errors)
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-            }
-
             if (ModelState.IsValid)
             {
                 _context.Reservations.Add(reservation);
@@ -184,8 +175,17 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 return RedirectToAction("Index");
             }
 
+            foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
+
             return View(reservationViewModel);
         }
+
 
         public ActionResult Edit(int id)
         {

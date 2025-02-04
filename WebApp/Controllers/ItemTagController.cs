@@ -178,6 +178,9 @@ namespace MiniOglasnikZaBesplatneStvariMvc.Controllers
                 _context.ItemTags.Add(itemTag);
                 _context.SaveChanges();
 
+                HttpContext.Session.Remove("ItemList");
+                HttpContext.Session.Remove("TagListItems");
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
